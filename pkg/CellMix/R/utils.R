@@ -389,7 +389,6 @@ askUser <- function (msg, allowed = c("y", "n"), idefault = "n", default = "n", 
 #' @return \code{TRUE} if the package was successfully loaded/found (installed), 
 #' \code{FALSE} otherwise.  
 #'  
-#' @import BiocInstaller
 #' @keywords internal
 uq_requirePackage <- function(package, lib=NULL, ..., load=TRUE, msg=NULL, quiet=TRUE, prependLF=FALSE
 							, ptype=c('CRAN-like', 'BioC', 'BioCSoft', 'BioCann')){
@@ -441,15 +440,8 @@ uq_requirePackage <- function(package, lib=NULL, ..., load=TRUE, msg=NULL, quiet
 	
 	if( install_type == 'CRAN' ){
 		pkginstall <- install.packages
-	}else{ # Bioconductor 
-		if( !reqpkg('BiocInstaller') ){ # get biocLite from bioconductor.org
-			# use internal sourceURL to avoid issues with proxies
-			sourceURL("http://www.bioconductor.org/biocLite.R")
-		}
-		# use biocLite wrapper to disable (auto-)updates
-		pkginstall <- function(pkgs, ...){
-			biocLite(pkgs, ..., suppressUpdates=TRUE, suppressAutoUpdate=TRUE)
-		}
+	} else {
+		stop("Can't install with BiocInstaller")
 	}
 	pkginstall(package, lib=lib, ...)
 	#
